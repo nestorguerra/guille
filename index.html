@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Nutricional - Guille</title>
+    <!-- Carga Tailwind desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bibliotecas de gráficos y fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg">
+        <main id="pages-container" class="pb-20">
+            <!-- Página de Inicio -->
+            <div id="page-inicio" class="page active p-6">
+                <header class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Hoy</h1>
+                    <div class="w-8 h-8"></div> <!-- Placeholder para icono -->
+                </header>
+                
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Menú del día</h2>
+                    <div id="menu-hoy" class="space-y-3">
+                        <!-- Las comidas del día se insertarán aquí dinámicamente -->
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 mt-6">
+                        <h3 class="text-lg font-semibold mb-2">Cumplimiento del menú</h3>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text" class="text-right text-sm font-medium text-blue-500 mt-1">0%</p>
+                    </div>
+
+                    <h2 class="text-xl font-semibold text-gray-900 pt-4">Recomendaciones</h2>
+                    <div class="space-y-3">
+                        <div id="rec-agua" class="rec-card bg-white rounded-xl p-4 flex items-center justify-between border-2 border-transparent transition-all cursor-pointer">
+                            <div>
+                                <h3 class="font-semibold">Hidratación</h3>
+                                <p class="text-sm text-gray-600">Beber 2.5-3 litros de agua al día.</p>
+                            </div>
+                            <img src="https://placehold.co/80x80/E0F2FE/3B82F6?text=Agua" alt="Botella de agua" class="w-16 h-16 rounded-lg object-cover">
+                        </div>
+                        <div id="rec-sups" class="rec-card bg-white rounded-xl p-4 flex items-center justify-between border-2 border-transparent transition-all cursor-pointer">
+                            <div>
+                                <h3 class="font-semibold">Suplementos</h3>
+                                <p class="text-sm text-gray-600">Tomar creatina y proteína post-entreno.</p>
+                            </div>
+                            <img src="https://placehold.co/80x80/E0E7FF/4F46E5?text=Sups" alt="Botes de suplementos" class="w-16 h-16 rounded-lg object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página de Menús -->
+            <div id="page-menus" class="page p-6">
+                <header class="flex items-center mb-6 relative">
+                    <h1 class="text-2xl font-bold text-gray-900 mx-auto">Calendario de Comidas</h1>
+                </header>
+                <div id="calendar-container">
+                    <!-- El calendario se generará aquí -->
+                </div>
+                <div id="menu-del-dia-seleccionado" class="mt-6 space-y-3">
+                    <!-- El menú del día seleccionado en el calendario aparecerá aquí -->
+                </div>
+            </div>
+
+            <!-- Página de Progreso -->
+            <div id="page-progreso" class="page p-6">
+                <header class="flex items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900 mx-auto">Progreso</h1>
+                </header>
+                <div class="space-y-6">
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">Peso Actual (kg)</p>
+                                <p id="progreso-peso-actual" class="text-4xl font-bold text-gray-900">86.2</p>
+                                <p id="progreso-imc" class="text-sm text-gray-600 font-medium">IMC: 23.4</p>
+                            </div>
+                            <div id="progreso-cambio-container" class="text-right">
+                                <!-- El cambio se insertará aquí -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Evolución del Peso</h3>
+                        <canvas id="pesoChart"></canvas>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Metas</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-base font-medium text-gray-700">Peso</span>
+                                    <span id="meta-peso-text" class="text-sm font-medium text-gray-700">85 / 90 kg</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div id="meta-peso-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-2">Añadir nuevo registro de peso</h3>
+                        <div class="flex gap-2">
+                            <input type="number" id="nuevo-peso-input" class="w-full bg-gray-100 border-2 border-gray-200 rounded-lg p-2 text-center" placeholder="Ej: 85.5">
+                            <button id="add-peso-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Añadir</button>
+                        </div>
+                    </div>
+                    <!-- Contenedor para el historial de peso -->
+                    <div id="historico-pesos-container" class="mt-6">
+                        <h3 class="text-lg font-semibold mb-2">Historial de Peso</h3>
+                        <div id="historico-pesos-lista" class="space-y-2">
+                            <!-- El historial se insertará aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página de Perfil -->
+            <div id="page-perfil" class="page p-6">
+                <header class="flex items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900 mx-auto">Perfil</h1>
+                </header>
+                <div class="flex flex-col items-center space-y-2 mb-8">
+                    <label for="upload-photo" class="profile-pic-label">
+                        <img id="profile-pic" src="https://placehold.co/100x100/DBEAFE/1E40AF?text=G" alt="Foto de perfil de Guille" class="w-24 h-24 rounded-full object-cover">
+                    </label>
+                    <input type="file" id="upload-photo" class="hidden" accept="image/*">
+                    <h2 class="text-xl font-bold">Guille</h2>
+                    <p class="text-gray-600">Deportista</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold">Información Personal</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Nombre</label>
+                            <input type="text" id="perfil-nombre" value="Guille" class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Edad</label>
+                            <input type="number" id="perfil-edad" value="15" class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Peso (kg)</label>
+                            <input type="number" id="perfil-peso" value="85" class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-500">Altura (cm)</label>
+                            <input type="number" id="perfil-altura" value="192" class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-semibold pt-4">Preferencias Alimenticias</h3>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Alergias</label>
+                        <textarea class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none" rows="2">Ninguna</textarea>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Alimentos Preferidos</label>
+                        <textarea class="w-full bg-gray-100 rounded-lg p-2 mt-1 border-2 border-gray-200 focus:border-blue-500 focus:outline-none" rows="3">Pollo, huevos, aguacate, pasta, carne roja.</textarea>
+                    </div>
+
+                    <div class="pt-6">
+                        <button id="save-profile-btn" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Barra de Navegación Inferior -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 flex justify-around py-2">
+            <button class="nav-item active flex flex-col items-center text-gray-500" data-page="inicio">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="text-xs font-medium">Inicio</span>
+            </button>
+            <button class="nav-item flex flex-col items-center text-gray-500" data-page="menus">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                <span class="text-xs font-medium">Menús</span>
+            </button>
+            <button class="nav-item flex flex-col items-center text-gray-500" data-page="progreso">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span class="text-xs font-medium">Progreso</span>
+            </button>
+            <button class="nav-item flex flex-col items-center text-gray-500" data-page="perfil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="text-xs font-medium">Perfil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Lógica JavaScript de la aplicación -->
+    <script src="app.js"></script>
+</body>
+</html>
