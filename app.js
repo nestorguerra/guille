@@ -1,167 +1,20 @@
 // Código JavaScript para la segunda versión del plan nutricional
 // Inicialización de la aplicación al cargar el DOM
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     dayjs.locale('es');
 
     // --- DATOS COMPLETOS DEL PLAN NUTRICIONAL ---
-    const planNutricional = {
-        semana1: {
-            desayuno: "3 huevos revueltos con 1/2 aguacate + 2 tostadas integrales con aceite. 1 vaso de leche. 1 naranja.",
-            cena: "Pechuga de pollo (200g) con arroz (120g) y verduras. Queso fresco batido 0% con miel.",
-            lunes: {
-                mediaManana: "Bocadillo integral de pavo (80g) y 1 plátano.",
-                comida: "Pasta integral (150g) con tomate y pollo (150g). Ensalada mixta. Yogur.",
-                merienda: "Batido de recuperación (leche, proteína, cacao, plátano)."
-            },
-            martes: {
-                mediaManana: "Puñado de frutos secos (30g) + yogur griego con miel.",
-                comida: "Arroz integral (150g) con ternera guisada (180g) y verduras. Manzana.",
-                merienda: "Bocadillo de atún (1 lata) con tomate y aguacate. Uvas."
-            },
-            miercoles: {
-                mediaManana: "Barrita de cereal y frutos secos. Batido de leche con cacao.",
-                comida: "Lentejas estofadas con verduras y pavo (150g). Pan integral. Yogur.",
-                merienda: "Batido casero (yogur, fresas, avena). Tostada con crema de cacahuete."
-            },
-            jueves: {
-                mediaManana: "Bocadillo de tortilla (2 huevos) con espinacas y queso.",
-                comida: "Espaguetis a la boloñesa 'fitness' (130g pasta, 150g carne). Piña.",
-                merienda: "Yogur proteico, plátano y frutos secos."
-            },
-            viernes: {
-                mediaManana: "Batido lácteo de chocolate. Sándwich integral de jamón york.",
-                comida: "Pollo al horno con patatas (300g) y zanahoria. Arroz (100g). Yogur.",
-                merienda: "Bocadillo de crema de cacahuete y mermelada. Vaso de leche."
-            },
-            sabado: {
-                mediaManana: "Batido de frutas tropicales con proteína. Galletas caseras de avena.",
-                comida: "Comida libre: Fajitas de pollo caseras.",
-                merienda: "Batido recuperador o pan con Nutella y leche."
-            },
-            domingo: {
-                mediaManana: "Tostada integral con tomate y atún. Fruta.",
-                comida: "Paella casera de pollo y verduras. Flan de huevo casero.",
-                merienda: "Batido de leche con plátano y cacao. Galletas María."
-            }
-        },
-        semana2: {
-            desayuno: "3 huevos revueltos, 2 tostadas integrales, aguacate, leche, fruta.",
-            cena: "Ternera a la plancha (200g) con patata cocida/asada (300g) y ensalada. Yogur.",
-            lunes: {
-                mediaManana: "Yogur bebible y barrita energética casera de avena.",
-                comida: "Macarrones (150g) con atún (2 latas) y tomate. Queso fresco con miel.",
-                merienda: "Batido recuperador post-basket (leche, whey, fruta)."
-            },
-            martes: {
-                mediaManana: "2 mini bocadillos de jamón serrano. Naranja.",
-                comida: "Arroz tres delicias saludable (150g arroz, 2 huevos, 150g pollo). Pera.",
-                merienda: "Puñado de almendras y batido de plátano con leche."
-            },
-            miercoles: {
-                mediaManana: "1 plátano y 2 tortitas de arroz con crema de cacahuete.",
-                comida: "Espaguetis carbonara 'fit' (130g pasta, 150g pollo/pavo). Yogur.",
-                merienda: "Batido proteico (leche, whey, fruta del bosque)."
-            },
-            jueves: {
-                mediaManana: "Barrita proteica comercial y 1 manzana.",
-                comida: "Bocadillo completo (baguette 120g, tortilla, pollo). Gazpacho. Yogur.",
-                merienda: "Tostada integral con queso fresco batido y mermelada. Nueces."
-            },
-            viernes: {
-                mediaManana: "Batido de avena (leche, avena, plátano). 2 huevos duros.",
-                comida: "Cuscús (130g) con pollo (150g) y verduras. Flan de vainilla casero.",
-                merienda: "Sandwich integral de crema de cacahuete y plátano. Vaso de leche."
-            },
-            sabado: {
-                mediaManana: "Tostada grande de pan de centeno con aguacate y 2 huevos revueltos.",
-                comida: "Libre/moderada: Comer fuera (ej. plato de pasta boloñesa).",
-                merienda: "Batido de leche con helado y fruta."
-            },
-            domingo: {
-                mediaManana: "Croissant integral con queso y pavo. Batido de proteínas.",
-                comida: "Cocido ligero: Garbanzos (100g) con verduras y carne magra.",
-                merienda: "Yogur griego con miel y granola."
-            }
-        },
-        semana3: {
-            desayuno: "3 huevos revueltos, 2 tostadas integrales, aguacate, leche, fruta.",
-            cena: "Salmón al horno (200g) con arroz blanco (120g) y brócoli al vapor. Yogur.",
-            lunes: {
-                mediaManana: "Yogur natural con muesli y nueces. Plátano.",
-                comida: "Espagueti (140g) con pollo (150g) al pesto casero. Kiwi.",
-                merienda: "Batido post-entreno (leche, whey, plátano, cacao)."
-            },
-            martes: {
-                mediaManana: "2 tostadas integrales con mantequilla de cacahuete y miel. Vaso de leche.",
-                comida: "Pollo (180g) con curry y arroz basmati (150g). Manzana al horno.",
-                merienda: "Batido de fresas (leche, fresas, yogur). 3 galletas María."
-            },
-            miercoles: {
-                mediaManana: "Bocadillo mediano integral de atún con tomate. Mandarina.",
-                comida: "Pasta rellena (150g) con salsa de queso ligera y pollo (150g).",
-                merienda: "1 banana y 2 huevos duros."
-            },
-            jueves: {
-                mediaManana: "Batido de avena y fruta. Barrita de cereal.",
-                comida: "Quinoa (130g) con verduras y ternera (150g). Naranja.",
-                merienda: "2 tostadas de arroz inflado con chocolate negro. Vaso de leche."
-            },
-            viernes: {
-                mediaManana: "Bol de requesón (200g) con miel y granola. Frutos rojos.",
-                comida: "Hamburguesa casera (150g) en pan integral con boniato al horno.",
-                merienda: "Smoothie verde (espinaca, piña, yogur). Galletas caseras."
-            },
-            sabado: {
-                mediaManana: "1 ración de churros (3-4) con chocolate (ocasional). Batido de proteína.",
-                comida: "Libre: Salida con amigos (ej. Burrito grande de pollo).",
-                merienda: "Fruta picada variada con yogur y miel."
-            },
-            domingo: {
-                mediaManana: "Tortilla de 2 huevos con atún. Pan integral. Zumo.",
-                comida: "Estofado de patatas (300g) con carne magra de cerdo (150g).",
-                merienda: "Yogur griego con cacao en polvo y avena."
-            }
-        },
-        semana4: {
-            desayuno: "Huevos, tostadas, aguacate, leche, fruta.",
-            cena: "Pizza casera saludable (base integral, pavo, mozzarella baja en grasa, verduras).",
-            lunes: {
-                mediaManana: "Leche con cacao y 2 magdalenas caseras integrales.",
-                comida: "Penne a la arrabiata (140g) con pollo (150g). Ensalada. Yogur.",
-                merienda: "Batido post-entreno (leche, whey, fruta)."
-            },
-            martes: {
-                mediaManana: "Bocadillo integral de queso fresco 0% y membrillo. Manzana.",
-                comida: "Arroz con pollo clásico (150g arroz, 180g contramuslos). Plátano.",
-                merienda: "Batido de plátano y fresas. 2 tortitas de maíz con hummus."
-            },
-            miercoles: {
-                mediaManana: "Yogur con frutas troceadas y avena. Almendras.",
-                comida: "Garbanzos con arroz integral (100g) y sofrito. Huevo cocido.",
-                merienda: "Sándwich integral de pollo a la plancha (100g)."
-            },
-            jueves: {
-                mediaManana: "Barrita casera de dátiles y frutos secos. Batido de proteína.",
-                comida: "Tallarines con gambas (150g) y verduras estilo wok.",
-                merienda: "1 yogur bebible de fresa y 1 plátano."
-            },
-            viernes: {
-                mediaManana: "2 tortas de arroz inflado con chocolate negro. Batido de proteína.",
-                comida: "Ensalada completa de pasta tricolor (130g) con atún y huevo.",
-                merienda: "Smoothie proteico (leche, yogur, mango). Pistachos."
-            },
-            sabado: {
-                mediaManana: "Cereales de desayuno (ocasional) con leche. Tortilla francesa.",
-                comida: "Libre: Comer fuera en familia (ej. Lasagna de carne).",
-                merienda: "Batido recuperador o yogur con miel y fresas."
-            },
-            domingo: {
-                mediaManana: "Montado de lomo adobado (80g) en pan integral. Zumo.",
-                comida: "Pollo asado (200g) con boniato asado (300g). Arroz con leche casero.",
-                merienda: "Frutos secos mixtos y 1 yogur de frutas."
-            }
+    let planNutricional = {};
+    try {
+        const response = await fetch('plan.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    };
+        planNutricional = await response.json();
+    } catch (error) {
+        console.error('Error al cargar plan.json', error);
+    }
+
 
     // --- LÓGICA DE LA APLICACIÓN ---
     const navItems = document.querySelectorAll('.nav-item');
