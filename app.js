@@ -166,16 +166,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DE LA APLICACIÓN ---
     const navItems = document.querySelectorAll('.nav-item');
     const pages = document.querySelectorAll('.page');
+    let currentPageIndex = 0;
 
-    // Navegación entre páginas
-    navItems.forEach(item => {
+    function showPage(index) {
+        const item = navItems[index];
+        const pageId = `page-${item.dataset.page}`;
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        currentPageIndex = index;
+    }
+
+    navItems.forEach((item, idx) => {
         item.addEventListener('click', () => {
-            const pageId = `page-${item.dataset.page}`;
-            pages.forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
+            showPage(idx);
         });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) {
+            e.preventDefault();
+            const delta = e.key === 'ArrowLeft' ? -1 : 1;
+            const newIndex = (currentPageIndex + delta + navItems.length) % navItems.length;
+            showPage(newIndex);
+            navItems[newIndex].focus();
+        }
     });
 
     // Funciones para cálculo de semana y obtención de menú según fecha
@@ -280,14 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const monthName = dayjs(firstDay).format('MMMM');
-        let calendarHTML = `<div class="flex justify-between items-center mb-4"><button id="prev-month" class="p-2 rounded-full hover:bg-gray-100">&lt;</button><h2 class="font-bold text-lg">${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</h2><button id="next-month" class="p-2 rounded-full hover:bg-gray-100">&gt;</button></div><div class="grid grid-cols-7 text-center text-xs text-gray-500 font-semibold mb-2"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="grid grid-cols-7 gap-1">`;
+        let calendarHTML = `<div class="flex justify-between items-center mb-4"><button id="prev-month" aria-label="Mes anterior" class="p-2 rounded-full hover:bg-gray-100">&lt;</button><h2 class="font-bold text-lg">${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${year}</h2><button id="next-month" aria-label="Mes siguiente" class="p-2 rounded-full hover:bg-gray-100">&gt;</button></div><div class="grid grid-cols-7 text-center text-xs text-gray-500 font-semibold mb-2"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="grid grid-cols-7 gap-1">`;
         let startingDay = firstDay.getDay();
         if (startingDay === 0) startingDay = 7;
         for (let i = 1; i < startingDay; i++) { calendarHTML += `<div></div>`; }
         for (let i = 1; i <= daysInMonth; i++) {
             const isToday = i === hoy.getDate() && month === hoy.getMonth() && year === hoy.getFullYear();
             const dayClass = isToday ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200';
-            calendarHTML += `<button class="day-btn p-2 rounded-full text-sm ${dayClass}" data-day="${i}">${i}</button>`;
+            calendarHTML += `<button class="day-btn p-2 rounded-full text-sm ${dayClass}" data-day="${i}" aria-label="Seleccionar día ${i} de ${monthName} ${year}">${i}</button>`;
         }
         calendarHTML += `</div>`;
         calendarContainer.innerHTML = calendarHTML;
@@ -307,10 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             renderCalendar(mesActual, anioActual);
         });
-        document.querySelectorAll('.day-btn').forEach(btn => {
+        const dayButtons = Array.from(document.querySelectorAll('.day-btn'));
+        dayButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const day = e.target.dataset.day;
-                document.querySelectorAll('.day-btn').forEach(b => {
+                dayButtons.forEach(b => {
                     b.classList.remove('bg-blue-200');
                     if (!(parseInt(b.dataset.day) === hoy.getDate() && mesActual === hoy.getMonth() && anioActual === hoy.getFullYear())) {
                         b.classList.remove('bg-blue-500', 'text-white');
@@ -321,6 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.target.classList.remove('bg-gray-100');
                 renderMenuDelDia(day);
             });
+        });
+
+        calendarContainer.addEventListener('keydown', (e) => {
+            const focused = document.activeElement;
+            if (!focused.classList.contains('day-btn')) return;
+            const index = dayButtons.indexOf(focused);
+            let newIndex = index;
+            if (e.key === 'ArrowLeft' && index > 0) newIndex = index - 1;
+            else if (e.key === 'ArrowRight' && index < dayButtons.length - 1) newIndex = index + 1;
+            else if (e.key === 'ArrowUp' && index - 7 >= 0) newIndex = index - 7;
+            else if (e.key === 'ArrowDown' && index + 7 < dayButtons.length) newIndex = index + 7;
+            else return;
+            e.preventDefault();
+            dayButtons[newIndex].focus();
         });
     }
 
